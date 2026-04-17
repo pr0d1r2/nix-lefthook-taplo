@@ -1,0 +1,12 @@
+---
+pre-commit:
+  commands:
+    taplo:
+      glob: "*.toml"
+      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {staged_files}
+
+pre-push:
+  commands:
+    taplo:
+      glob: "*.toml"
+      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {push_files}
