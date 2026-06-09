@@ -1,64 +1,70 @@
-# Flatten SPEC — nix-lefthook-taplo
+# SPEC — nix-lefthook-taplo
 
-## Goal
-Remove the `nix-dev-shell-agentic` flake input (and its transitive
-explosion) from `flake.nix`, preserving the `lefthook-taplo` package output
-and keeping CI (`nix develop .#ci` + remote lefthook hooks) and bats green.
+## §G Goal
 
-## Before
-- flake.lock: 59 nodes.
-- Inputs: nixpkgs-lock, nixpkgs(follows), nix-dev-shell-agentic(flake).
-- Outputs: packages.<sys>.default = lefthook-taplo; devShells ci/default via
-  nix-dev-shell-agentic.lib.mkShells.
+Lefthook-compatible taplo wrapper for TOML linting. Filter `.toml` files
+from the staged/pushed argument list and run `taplo check` on them, blocking
+the commit/push when any file fails to parse. Packaged as a Nix flake.
+Opensource-safe: zero credentials, zero local paths, zero private refs.
 
-## Consumption of the agentic devShell here
-- `.envrc` = `use flake` → devShells.<sys>.default.
-- CI enters `nix develop .#ci` and runs lefthook install / pre-commit /
-  pre-push --all-files.
-- lefthook.yml `remotes:` invoke wrapper binaries that must be on PATH in
-  the ci shell: lefthook-{nixfmt,shellcheck,shfmt,deadnix,bats-unit,yamllint,
-  typos,trailing-whitespace,missing-final-newline,git-conflict-markers,
-  editorconfig-checker,git-no-local-paths,file-size-check}; bare `bats`
-  (bats-parse), bare `nix flake check` (nix-flake-check); plus lefthook, git,
-  coreutils, parallel, taplo.
-- bats unit tests need BATS_LIB_PATH + lefthook-taplo on PATH.
+## §C Constraints
 
-## Changes
-### Inputs
-Remove nix-dev-shell-agentic. Add `flake = false` `-src` inputs for each
-sibling wrapper the remotes invoke (15 leaves: the statix template set plus
-statix and nix-no-embedded-shell, which taplo consumes as remotes). Result
-inputs: nixpkgs-lock, nixpkgs(follows), + 15 flake=false leaves. No flake
-input -> no dep-tree explosion.
+- C1: Pure bash — taplo is the only runtime tool, no Python/Ruby/etc deps
+- C2: Nix flake — `writeShellApplication` pkg, plain `mkShell` devShells
+- C3: MIT license
+- C4: Multi-platform: `aarch64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`
+- C5: Detached from parent project — no credential leaks, no hardcoded local paths, no private repo refs
+- C6: All config via env vars — no config files beyond baseline
+- C7: Exit non-zero on TOML parse failure — hard enforcement, blocks commit/push
+- C8: 2-space indentation, LF endings, final newline, no trailing whitespace (`.editorconfig` enforced)
+- C9: Flattened flake — `flake = false` `-src` inputs for every wrapper the remotes invoke, plus `nixpkgs-lock`; no `flake = true` inputs, so no transitive dependency-tree explosion
 
-### packages (UNCHANGED logic)
-packages.<sys>.default = writeShellApplication { name="lefthook-taplo";
-runtimeInputs=[pkgs.taplo]; text=readFile ./lefthook-taplo.sh; }.
+## §I Interfaces
 
-### devShells (plain mkShell)
-lefthookWrappersFor helper (copied from proven statix template:
-bats-unit + file-size-check get special multi-input handling, rest via `wrap`).
-batsWithLibsFor helper. ciCommon = [self pkg, batsWithLibs, bats, coreutils,
-git, lefthook, nix, parallel, taplo] ++ wrappers.
-- ci = mkShell { packages = ciCommon; BATS_LIB_PATH = "${batsWithLibs}/share/bats"; }
-- default = mkShell { packages = ciCommon; shellHook = dev.sh expanded; }
+- I.cli: `lefthook-taplo FILE...` — main binary; filters `.toml` files, runs `taplo check`, exit 0 on pass, exit non-zero on parse failure
+- I.env: `LEFTHOOK_TAPLO_TIMEOUT` (seconds, default `30`) — wraps the hook invocation in `timeout` from `lefthook.yml` / `lefthook-remote.yml`
+- I.remote: `lefthook-remote.yml` — consumers add this repo as a lefthook remote; `pre-commit` runs `lefthook-taplo {staged_files}`, `pre-push` runs `lefthook-taplo {push_files}`, both globbed to `*.toml`
+- I.flake: `packages.${system}.default` — the `lefthook-taplo` Nix pkg output
+- I.devshell: `devShells.${system}.default` + `.#ci` — dev/CI shells via plain `mkShell`; both carry the pkg, bats-with-libs, taplo, lefthook, git, nix, parallel, coreutils, and the full wrapper suite
+- I.ci: `.github/workflows/ci.yml` — linux + macos via `nix-lefthook-ci-action` (nix build + lefthook pre-commit + pre-push)
+- I.pins: `.github/workflows/update-pins.yml` — daily `nix flake update nixpkgs-lock` + `nix flake check`, opens auto-merge PR
 
-### Side changes required to land a flattened flake green
-1. config/lefthook/file_size_limits.yml: nix 4096 -> 10240. The flattened
-  flake.nix has 15 inline wrappers and exceeds 4096 bytes; the proven
-  statix template repo uses nix:10240 for the same reason. Pure config.
-2. lefthook-taplo.sh: reformat 4-space -> 2-space because the upstream shfmt
-  remote default (`-i 2` on main) requires it. Whitespace-only; behavior
-  identical.
+## §V Invariants
 
-## Validation gate (all must pass)
-1. nix flake check — PASS.
-2. nix flake show — packages.<sys>.default = lefthook-taplo; devShells ci+default. UNCHANGED set.
-3. nix build .#default + smoke (no-arg → 0, non-toml → 0, bad toml → 1).
-4. bats tests/unit/ inside nix develop .#ci — PASS.
-5. lefthook run pre-commit --all-files inside .#ci — PASS.
-6. lock nodes << 59.
+- V1: No arguments → immediate exit 0 (nothing staged matches `*.toml`)
+- V2: Only `*.toml` files are checked — every other extension is filtered out of the argument list
+- V3: Non-existent paths are skipped silently (`[ -f "$f" ]` guard) — no crash on deleted/renamed files
+- V4: After filtering, an empty file list → exit 0 (no taplo invocation)
+- V5: `taplo check` is `exec`'d on the surviving file list — its exit code is the hook's exit code, so invalid TOML blocks the commit/push
+- V6: Hook script is sourced by `writeShellApplication` — no shebang, no `set` lines of its own (the wrapper supplies `set -euo pipefail`)
+- V7: `LEFTHOOK_TAPLO_TIMEOUT` bounds runtime (default 30s) — set in both `lefthook.yml` and `lefthook-remote.yml`
+- V8: `default` devShell `shellHook` expands `dev.sh` with `@BATS_LIB_PATH@` substituted, sets `BATS_LIB_PATH`, and runs `lefthook install` when `.git/hooks/pre-commit` is absent
+- V9: `ci` devShell exports `BATS_LIB_PATH` directly and omits the install hook
+- V10: No credentials, secrets, tokens, API keys, or private paths in any tracked file
+- V11: No hardcoded local filesystem paths (enforced by `nix-lefthook-git-no-local-paths` hook)
+- V12: `flake.lock` pins `nixpkgs` via `nixpkgs-lock`; all wrapper inputs are `flake = false` `-src` leaves, keeping the lock small
+- V13: `config/lefthook/file_size_limits.yml` raises the `nix` limit to 10240 bytes to accommodate the inline wrapper definitions in `flake.nix`
+- V14: CI runs both pre-commit and pre-push on linux + macos
+- V15: All linters pass: nixfmt, shellcheck, shfmt, statix, deadnix, nix-no-embedded-shell, bats-parse, bats-unit, yamllint, typos, trailing-whitespace, missing-final-newline, git-conflict-markers, editorconfig-checker, git-no-local-paths, file-size-check, nix-flake-check
+- V16: `packages.${system}.default` set and `devShells` (`ci` + `default`) are the only flake outputs — stable surface across the supported systems
 
-## Then
-Branch flatten-drop-agentic, commit, push, DRAFT PR.
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+## §T Tasks
+
+| id | status | task | cites |
+| --- | --- | --- | --- |
+| T1 | x | core wrapper script: filter `*.toml`, skip missing, exec `taplo check` | V1,V2,V3,V4,V5,I.cli |
+| T2 | x | sourced-by-writeShellApplication shape (no shebang/set) | V6,C1 |
+| T3 | x | timeout env var wiring in lefthook configs | V7,I.env |
+| T4 | x | Nix flake pkg (`writeShellApplication`, runtimeInputs = taplo) | C2,I.flake |
+| T5 | x | flattened inputs: nixpkgs-lock + 15 `flake = false` wrapper leaves | C9,V12 |
+| T6 | x | devShells `ci` + `default` via plain mkShell with full wrapper suite | C2,I.devshell,V8,V9 |
+| T7 | x | lefthook-remote.yml for consumers (pre-commit + pre-push) | I.remote |
+| T8 | x | dev.sh — BATS_LIB_PATH + auto-install lefthook | V8 |
+| T9 | x | unit tests: lefthook-taplo.bats (valid/invalid/mixed/missing/empty) | V1-V5 |
+| T10 | x | unit tests: dev.bats (placeholder, install, skip-install) | V8 |
+| T11 | x | GitHub Actions CI: linux + macos via nix-lefthook-ci-action | V14,I.ci |
+| T12 | x | update-pins workflow: daily nixpkgs-lock bump + flake check PR | I.pins |
+| T13 | x | linter suite via lefthook remotes | V15 |
+| T14 | x | file_size_limits.yml: nix limit 10240 for inline wrappers | V13 |
+| T15 | x | opensource audit: no credentials/local-paths/private-refs | V10,V11,C5 |
+| T16 | x | .gitignore: result, result-*, .direnv | V10,C5 |
