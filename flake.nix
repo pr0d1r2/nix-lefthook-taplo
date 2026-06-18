@@ -241,5 +241,16 @@
           };
         }
       );
+
+      checks = forAllSystems (pkgs: {
+        skills-materialize = set-and-setting.lib.mkMaterializeCheck {
+          inherit pkgs;
+          categories = [
+            "nix"
+            "lefthook"
+            "test"
+          ];
+        };
+      });
     };
 }
