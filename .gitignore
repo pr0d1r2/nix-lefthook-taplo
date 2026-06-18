@@ -1,3 +1,9 @@
 result
 result-*
 .direnv
+
+# Materialized by mkSet (set-and-setting) on dev shell entry; regenerated
+# from the pinned flake.lock rev, never committed.
+/.claude/skills/set/
+/.claude/rules/
+/bin/sync-set
