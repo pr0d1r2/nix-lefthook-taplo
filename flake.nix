@@ -9,6 +9,7 @@
   inputs = {
     nixpkgs-lock.url = "github:pr0d1r2/nixpkgs-lock";
     nixpkgs.follows = "nixpkgs-lock/nixpkgs";
+    set-and-setting.url = "github:pr0d1r2/set-and-setting";
     nix-lefthook-bats-unit-src = {
       url = "github:pr0d1r2/nix-lefthook-bats-unit";
       flake = false;
@@ -90,6 +91,7 @@
       nix-lefthook-trailing-whitespace-src,
       nix-lefthook-typos-src,
       nix-lefthook-yamllint-src,
+      set-and-setting,
       ...
     }:
     let
@@ -231,11 +233,24 @@
           };
           default = pkgs.mkShell {
             packages = ciCommon;
-            shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${batsWithLibs}" ] (
-              builtins.readFile ./dev.sh
-            );
+            shellHook =
+              builtins.replaceStrings
+                [ "@BATS_LIB_PATH@" "@MKSET@" ]
+                [ "${batsWithLibs}" "${set-and-setting.apps.${system}.mkSet.program}" ]
+                (builtins.readFile ./dev.sh);
           };
         }
       );
+
+      checks = forAllSystems (pkgs: {
+        skills-materialize = set-and-setting.lib.mkMaterializeCheck {
+          inherit pkgs;
+          categories = [
+            "nix"
+            "lefthook"
+            "test"
+          ];
+        };
+      });
     };
 }
