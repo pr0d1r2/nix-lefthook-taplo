@@ -27,7 +27,6 @@ Opensource-safe: zero credentials, zero local paths, zero private refs.
 - I.flake: `packages.${system}.default` — the `lefthook-taplo` Nix pkg output
 - I.devshell: `devShells.${system}.default` + `.#ci` — dev/CI shells via plain `mkShell`; both carry the pkg, bats-with-libs, taplo, lefthook, git, nix, parallel, coreutils, and the full wrapper suite
 - I.ci: `.github/workflows/ci.yml` — linux + macos via `nix-lefthook-ci-action` (nix build + lefthook pre-commit + pre-push)
-- I.pins: `.github/workflows/update-pins.yml` — daily `nix flake update nixpkgs-lock` + `nix flake check`, opens auto-merge PR
 
 ## §V Invariants
 
@@ -63,7 +62,6 @@ Opensource-safe: zero credentials, zero local paths, zero private refs.
 | T9 | x | unit tests: lefthook-taplo.bats (valid/invalid/mixed/missing/empty) | V1-V5 |
 | T10 | x | unit tests: dev.bats (placeholder, install, skip-install) | V8 |
 | T11 | x | GitHub Actions CI: linux + macos via nix-lefthook-ci-action | V14,I.ci |
-| T12 | x | update-pins workflow: daily nixpkgs-lock bump + flake check PR | I.pins |
 | T13 | x | linter suite via lefthook remotes | V15 |
 | T14 | x | file_size_limits.yml: nix limit 10240 for inline wrappers | V13 |
 | T15 | x | opensource audit: no credentials/local-paths/private-refs | V10,V11,C5 |
