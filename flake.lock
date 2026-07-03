@@ -328,11 +328,11 @@
     "nix-lefthook-git-no-local-paths-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1781585801,
-        "narHash": "sha256-ByK0D1mc0/Q94XiEh7yrHU5RgTUiOq2ojMN7vjeuSmQ=",
+        "lastModified": 1783061347,
+        "narHash": "sha256-rHizSGMYxyZyKfs7IYLCvsrJFz8DYdj+Wq1OpdbDljQ=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-git-no-local-paths",
-        "rev": "4152b07bd7f96370fd87c7cfd61ea70c685666be",
+        "rev": "897aa3a6ab5f7977a319f14d778d5e00c146a0ef",
         "type": "github"
       },
       "original": {
@@ -504,11 +504,11 @@
     "nix-lefthook-narrow-language-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1780725157,
-        "narHash": "sha256-6sa6Nu4o48xB1tSd+SCyigGP8xyUbpzDcJ3ums95c9c=",
+        "lastModified": 1782416798,
+        "narHash": "sha256-vBDkMadnmihjm184UwOQ9wF9pvGGS4LauxSaKu7EPa8=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-narrow-language",
-        "rev": "f957b0073747d158fb75d4b96d5164b89f0eec4b",
+        "rev": "7826da5bca1f91521c3f80114cad74261bac3a04",
         "type": "github"
       },
       "original": {
@@ -936,11 +936,11 @@
     "nix-lefthook-yamllint-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1780983364,
-        "narHash": "sha256-NzF2nt32w4f5tlNDGkaZAOHBtt0OmNcpnQ9aDiqetF4=",
+        "lastModified": 1783060032,
+        "narHash": "sha256-Q9PHmDEW20/Sn2q1KLa5xDuTuxvhuWci6nt7OS4fYIc=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-yamllint",
-        "rev": "fbd0497ae8df6f80233b8e8178f5ff71c9673170",
+        "rev": "fd99660e81a2d57afcc3335233ad2edb15905167",
         "type": "github"
       },
       "original": {
@@ -1113,11 +1113,11 @@
         "nixpkgs-lock": "nixpkgs-lock_2"
       },
       "locked": {
-        "lastModified": 1781759603,
-        "narHash": "sha256-xaErU0uiZhRfAHiT4t9VET4ANFQ2WPgGb8wNPM+blEg=",
+        "lastModified": 1783053763,
+        "narHash": "sha256-g4kcjxzLlYT3wDLJs5+IhEVYKUOAHsi1JqgKS67r8cQ=",
         "owner": "pr0d1r2",
         "repo": "set-and-setting",
-        "rev": "6fb26736a395c251c19b7505151eb905e6aff0f5",
+        "rev": "a023571d39184d2175107125f1a355964feb63f2",
         "type": "github"
       },
       "original": {

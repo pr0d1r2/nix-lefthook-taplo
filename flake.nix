@@ -116,6 +116,12 @@
               }
               // extra
             );
+          getFileSizeLimit = wrap "get-file-size-limit" nix-lefthook-file-size-check-src {
+            runtimeInputs = [
+              pkgs.gawk
+              pkgs.gnugrep
+            ];
+          };
         in
         [
           (pkgs.writeShellApplication {
@@ -133,24 +139,14 @@
           (wrap "lefthook-editorconfig-checker" nix-lefthook-editorconfig-checker-src {
             runtimeInputs = [ pkgs.editorconfig-checker ];
           })
-          (wrap "get-file-size-limit" nix-lefthook-file-size-check-src {
-            runtimeInputs = [
-              pkgs.gawk
-              pkgs.gnugrep
-            ];
-          })
+          getFileSizeLimit
           (pkgs.writeShellApplication {
             name = "lefthook-file-size-check";
             runtimeInputs = [
               pkgs.gawk
               pkgs.gnugrep
               pkgs.coreutils
-              (wrap "get-file-size-limit" nix-lefthook-file-size-check-src {
-                runtimeInputs = [
-                  pkgs.gawk
-                  pkgs.gnugrep
-                ];
-              })
+              getFileSizeLimit
             ];
             text = builtins.readFile "${nix-lefthook-file-size-check-src}/lefthook-file-size-check.sh";
           })
