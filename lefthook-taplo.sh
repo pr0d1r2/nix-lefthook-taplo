@@ -10,7 +10,7 @@ files=()
 for f in "$@"; do
   [ -f "$f" ] || continue
   case "$f" in
-  *.toml) files+=("$f") ;;
+    *.toml) files+=("$f") ;;
   esac
 done
 
