@@ -44,7 +44,7 @@ Opensource-safe: zero credentials, zero local paths, zero private refs.
 - V12: `flake.lock` pins `nixpkgs` via `nixpkgs-lock`; all wrapper inputs are `flake = false` `-src` leaves, keeping the lock small
 - V13: `config/lefthook/file_size_limits.yml` raises the `nix` limit to 10240 bytes to accommodate the inline wrapper definitions in `flake.nix`
 - V14: CI runs both pre-commit and pre-push on linux + macos
-- V15: All linters pass: nixfmt, shellcheck, shfmt, statix, deadnix, nix-no-embedded-shell, bats-parse, bats-unit, yamllint, typos, trailing-whitespace, missing-final-newline, git-conflict-markers, editorconfig-checker, git-no-local-paths, file-size-check, nix-flake-check
+- V15: All linters pass: nixfmt, shellcheck, shfmt, statix, deadnix, nix-no-embedded-shell, bats-parse, bats-unit, yamllint, markdownlint, markdownlint-agentic, typos, trailing-whitespace, missing-final-newline, git-conflict-markers, editorconfig-checker, git-no-local-paths, file-size-check, nix-flake-check
 - V16: `packages.${system}.default` set and `devShells` (`ci` + `default`) are the only flake outputs — stable surface across the supported systems
 
 ## §T Tasks
@@ -55,7 +55,7 @@ Opensource-safe: zero credentials, zero local paths, zero private refs.
 | T2 | x | sourced-by-writeShellApplication shape (no shebang/set) | V6,C1 |
 | T3 | x | timeout env var wiring in lefthook configs | V7,I.env |
 | T4 | x | Nix flake pkg (`writeShellApplication`, runtimeInputs = taplo) | C2,I.flake |
-| T5 | x | flattened inputs: nixpkgs-lock + 15 `flake = false` wrapper leaves | C9,V12 |
+| T5 | x | flattened inputs: nixpkgs-lock + 17 `flake = false` wrapper leaves | C9,V12 |
 | T6 | x | devShells `ci` + `default` via plain mkShell with full wrapper suite | C2,I.devshell,V8,V9 |
 | T7 | x | lefthook-remote.yml for consumers (pre-commit + pre-push) | I.remote |
 | T8 | x | dev.sh — BATS_LIB_PATH + auto-install lefthook | V8 |
