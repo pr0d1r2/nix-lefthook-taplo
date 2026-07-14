@@ -7,3 +7,7 @@ result-*
 /.claude/skills/set/
 /.claude/rules/
 /bin/sync-set
+.direnv/
+.markdownlint.yml
+.yamllint.yml
+lefthook.yml
