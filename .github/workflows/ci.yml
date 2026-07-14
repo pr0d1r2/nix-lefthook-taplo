@@ -9,4 +9,11 @@ name: CI
 
 jobs:
   guardrails:
-    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@main
+    # Pinned to the commit that switched the darwin job to
+    # DeterminateSystems/nix-installer-action (set-and-setting B26).
+    # `@main` floated onto a revision whose cachix/install-nix-action@v27
+    # shell installer aborts on macos-latest with
+    # `dscl ... eDSRecordAlreadyExists` (-14135) because `_nixbld` already
+    # exists; pinning makes check-darwin reproducible regardless of upstream
+    # main drift.
+    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@8d6094a97f0ee04bc617a680253c0fcecd98654e
