@@ -42,6 +42,11 @@
     {
       packages = forAllSystems (pkgs: {
         setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
+        default = pkgs.writeShellApplication {
+          name = "lefthook-taplo";
+          runtimeInputs = [ pkgs.taplo ];
+          text = builtins.readFile ./lefthook-taplo.sh;
+        };
       });
 
       devShells = forAllSystems (
@@ -52,7 +57,7 @@
         in
         set-and-setting.lib.mkDevShells {
           inherit pkgs;
-          basePackages = mat.packages;
+          basePackages = mat.packages ++ [ self.packages.${sys}.default ];
           defaultShellHook = ''
             ${self.packages.${sys}.setting}/bin/sync-setting .
             cp -f ${mat.files}/lefthook.yml lefthook.yml
