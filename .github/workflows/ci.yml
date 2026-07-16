@@ -18,7 +18,9 @@ jobs:
           # synthetic merge checkout and makes `nix develop` fail before the
           # shell hook can materialize the configs.
           fetch-depth: 0
-      - uses: cachix/install-nix-action@v27
+      # v27 installs Nix 2.22.1, which is too old for the refreshed flake
+      # inputs. Keep CI's evaluator aligned with the current lock graph.
+      - uses: cachix/install-nix-action@v31.11.0
       - name: Materialize configs
         run: nix develop --command true
       - name: Confirm materialization
