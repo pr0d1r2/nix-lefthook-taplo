@@ -9,11 +9,34 @@ name: CI
 
 jobs:
   guardrails:
-    # Pinned to the commit that switched the darwin job to
-    # DeterminateSystems/nix-installer-action (set-and-setting B26).
-    # `@main` floated onto a revision whose cachix/install-nix-action@v27
-    # shell installer aborts on macos-latest with
-    # `dscl ... eDSRecordAlreadyExists` (-14135) because `_nixbld` already
-    # exists; pinning makes check-darwin reproducible regardless of upstream
-    # main drift.
-    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@8d6094a97f0ee04bc617a680253c0fcecd98654e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Nix resolves a local git flake through its commit ancestry. The
+          # default depth of one omits the PR head's parent from GitHub's
+          # synthetic merge checkout and makes `nix develop` fail before the
+          # shell hook can materialize the configs.
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v27
+      - name: Materialize configs
+        run: nix develop --command true
+      - name: Confirm materialization
+        run: nix run .#confirm
+      - name: Nix flake check
+        run: nix flake check --print-build-logs --timeout 600
+
+  guardrails-darwin:
+    needs: guardrails
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@main
+      - name: Materialize configs
+        run: |
+          setting_pkg="$(nix build .#setting --print-out-paths --no-link)"
+          "$setting_pkg/bin/sync-setting" .
+      - name: Nix flake check
+        run: nix flake check --print-build-logs --timeout 600
