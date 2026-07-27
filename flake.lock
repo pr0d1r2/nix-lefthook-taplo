@@ -1216,11 +1216,11 @@
         "nixpkgs-lock": "nixpkgs-lock_3"
       },
       "locked": {
-        "lastModified": 1785079528,
-        "narHash": "sha256-vlRTuU8Zy09/fCL4Q/tPcZxGo7QcstsBPB4FSRy0Vdo=",
+        "lastModified": 1785080097,
+        "narHash": "sha256-rtHZMZAOJyspMoZteRE7/5iu3u52igN/DLEqvU0FZw4=",
         "owner": "pr0d1r2",
         "repo": "set-and-setting",
-        "rev": "42dee4516d9729b585325f154ff5f9a6ece8cf44",
+        "rev": "d0196d19a0611cc959d967da4ec9f2bd72f14927",
         "type": "github"
       },
       "original": {
