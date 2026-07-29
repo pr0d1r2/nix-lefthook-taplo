@@ -41,8 +41,8 @@ Opensource-safe: zero credentials, zero local paths, zero private refs.
 - V9: `ci` devShell exports `BATS_LIB_PATH` directly and omits the install hook
 - V10: No credentials, secrets, tokens, API keys, or private paths in any tracked file
 - V11: No hardcoded local filesystem paths (enforced by `nix-lefthook-git-no-local-paths` hook)
-- V12: `flake.lock` pins `nixpkgs` via `nixpkgs-lock`; all wrapper inputs are `flake = false` `-src` leaves, keeping the lock small
-- V13: `config/lefthook/file_size_limits.yml` raises the `nix` limit to 10240 bytes to accommodate the inline wrapper definitions in `flake.nix`
+- V12: `flake.lock` pins `nixpkgs` via `nixpkgs-lock`; `set-and-setting` is a `flake = true` input with its own transitive dependency tree
+- V13: `config/lefthook/file_size_limits.yml` raises the `nix` limit to 10240 bytes to accommodate the inline wrapper definitions in `flake.nix`, and the `lock` limit to 262144 bytes for the `flake.lock` dependency graph
 - V14: CI runs both pre-commit and pre-push on linux + macos
 - V15: All linters pass: nixfmt, shellcheck, shfmt, statix, deadnix, nix-no-embedded-shell, bats-parse, bats-unit, yamllint, markdownlint, markdownlint-agentic, typos, trailing-whitespace, missing-final-newline, git-conflict-markers, editorconfig-checker, git-no-local-paths, file-size-check, nix-flake-check
 - V16: `packages.${system}.default` set and `devShells` (`ci` + `default`) are the only flake outputs — stable surface across the supported systems
