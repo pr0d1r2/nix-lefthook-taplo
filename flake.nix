@@ -21,6 +21,7 @@
       ...
     }:
     let
+      sas = set-and-setting.inputs.set-and-setting;
       supportedSystems = [
         "aarch64-darwin"
         "x86_64-darwin"
@@ -41,7 +42,7 @@
     in
     {
       packages = forAllSystems (pkgs: {
-        setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
+        setting = (sas.lib.mkSetting { inherit pkgs; }).materialized;
         default = pkgs.writeShellApplication {
           name = "lefthook-taplo";
           runtimeInputs = [ pkgs.taplo ];
@@ -52,10 +53,10 @@
       devShells = forAllSystems (
         pkgs:
         let
-          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+          mat = sas.lib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
         in
-        set-and-setting.lib.mkDevShells {
+        sas.lib.mkDevShells {
           inherit pkgs;
           basePackages = mat.packages ++ [ self.packages.${sys}.default ];
           defaultShellHook = ''
@@ -67,12 +68,12 @@
 
       checks = forAllSystems (
         pkgs:
-        (set-and-setting.lib.checksFor {
+        (sas.lib.checksFor {
           inherit pkgs fragments;
           src = ./.;
         })
         // {
-          dep-graph = set-and-setting.lib.mkDepGraphCheck {
+          dep-graph = sas.lib.mkDepGraphCheck {
             inherit pkgs;
             projectRoot = ./.;
           };
@@ -83,7 +84,7 @@
       apps = forAllSystems (
         pkgs:
         let
-          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+          mat = sas.lib.materializationFor { inherit pkgs fragments; };
         in
         {
           confirm = {
