@@ -21,26 +21,11 @@
       ...
     }:
     let
-      sas = set-and-setting.inputs.set-and-setting;
-      supportedSystems = [
-        "aarch64-darwin"
-        "x86_64-darwin"
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-      forAllSystems =
-        f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
-
-      fragments = [
-        "base"
-        "nix"
-        "shell"
-        "ascii"
-        "markdown"
-        "yaml"
-      ];
-    in
-    {
+      sas = set-and-setting;
+      supportedSystems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+      fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+    in {
       packages = forAllSystems (pkgs: {
         setting = (sas.lib.mkSetting { inherit pkgs; }).materialized;
         default = pkgs.writeShellApplication {
@@ -50,8 +35,13 @@
         };
       });
 
-      devShells = forAllSystems (
-        pkgs:
+      devShells = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+          sas = set-and-setting;
+        in
         let
           mat = sas.lib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
@@ -66,8 +56,13 @@
         }
       );
 
-      checks = forAllSystems (
-        pkgs:
+      checks = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+          sas = set-and-setting;
+        in
         (sas.lib.checksFor {
           inherit pkgs fragments;
           src = ./.;
@@ -81,8 +76,13 @@
         }
       );
 
-      apps = forAllSystems (
-        pkgs:
+      apps = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+          sas = set-and-setting;
+        in
         let
           mat = sas.lib.materializationFor { inherit pkgs fragments; };
         in
