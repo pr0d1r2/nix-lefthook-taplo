@@ -41,5 +41,28 @@
           text = builtins.readFile ./lefthook-taplo.sh;
         };
       };
+    }
+    // {
+      devShells =
+        nixpkgs.lib.mapAttrs (_system: shells: shells // { ci = shells.default; })
+          (set-and-setting.lib.mkConsumerFlake {
+            inherit self nixpkgs set-and-setting;
+            fragments = [
+              "base"
+              "nix"
+              "shell"
+              "ascii"
+              "markdown"
+              "yaml"
+            ];
+            src = ./.;
+            extraPackages = pkgs: {
+              default = pkgs.writeShellApplication {
+                name = "lefthook-taplo";
+                runtimeInputs = [ pkgs.taplo ];
+                text = builtins.readFile ./lefthook-taplo.sh;
+              };
+            };
+          }).devShells;
     };
 }
