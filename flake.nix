@@ -48,12 +48,12 @@
           (set-and-setting.lib.mkConsumerFlake {
             inherit self nixpkgs set-and-setting;
             fragments = [
-        "base"
-        "nix"
-        "shell"
-        "ascii"
-        "markdown"
-        "yaml"
+              "base"
+              "nix"
+              "shell"
+              "ascii"
+              "markdown"
+              "yaml"
             ];
             src = ./.;
             extraPackages = pkgs: {
