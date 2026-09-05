@@ -52,24 +52,23 @@ Those entries are worth more than a green badge. A gate is a claim about what
 it catches, and the only honest way to describe one is alongside what it
 missed.
 
-## The guardrails are this repository's own
+## The guardrails are visible in this repository
 
-This repository is gated by `lefthook.yml`. Before a machine-authored branch is
-pushed, it is run against that gate — the same checks a human gets on
-`git commit`, in the same environment continuous integration uses. A change the
-gate refuses is not pushed and no pull request is opened for it.
+The CI workflow in `.github/workflows/ci.yml` delegates the repository's checks
+to the pinned guardrail workflow. The consumer-facing hook configuration is
+`lefthook-remote.yml`; there is no local `lefthook.yml` in this repository.
+Before trusting a change, inspect the workflow and run the checks it invokes in
+the Nix development shell.
 
 Run it yourself:
 
 ```sh
-lefthook run pre-commit --all-files
+nix flake check
 ```
 
-That property is recent rather than original, which is the honest way to put
-it: the loop's agent worked for a long time in a sandbox where these hooks were
-never installed, so continuous integration was the first thing to see a change,
-and defects a local hook names in a fraction of a second cost a push and a full
-CI round each.
+The local hook setup is consumer-facing rather than the repository's CI gate:
+entering the default development shell installs Lefthook when needed, and the
+remote configuration runs the wrapper for staged or pushed TOML files.
 
 ## What a reader should actually check
 
