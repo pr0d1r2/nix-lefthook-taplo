@@ -339,11 +339,11 @@
     "nix-lefthook-nix-no-embedded-shell-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788803885,
-        "narHash": "sha256-1Wzm6MjYgO1uaA7JHfbei5gco865Cdkr6y49Ivgs9Ac=",
+        "lastModified": 1788900232,
+        "narHash": "sha256-gwKtGctO5dc3ndQgkoGGcopYpVnikKdHpWga7MwLJ5Y=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-nix-no-embedded-shell",
-        "rev": "576ec68f22a1f861531c5993264510b33c5921e8",
+        "rev": "61a9b3aaa5a0c85c511402730d54768262313b0c",
         "type": "github"
       },
       "original": {
@@ -451,11 +451,11 @@
     "nix-lefthook-taplo-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788820967,
-        "narHash": "sha256-Gkbn1ErTzoIUbEHW3AGcepSRR61zWkDx74IXa3Ubk08=",
+        "lastModified": 1788963855,
+        "narHash": "sha256-L+OdDb+ZhJ4qqv6gjcR8aFBfINn2h6MA6x4Bg3+Dg8s=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-taplo",
-        "rev": "dd40495766e56044372cd7fddda609abe5449dee",
+        "rev": "89532be62b19e6ce5c09547f457e793c58c0cb50",
         "type": "github"
       },
       "original": {
@@ -531,11 +531,11 @@
     "nix-lefthook-yamllint-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788820237,
-        "narHash": "sha256-TcDbZLm7le+aXtjxGvTCk4Y6z7Wscw9s0Qz70nJpRKI=",
+        "lastModified": 1788964345,
+        "narHash": "sha256-gltpxXdmOtzyE8eKnPbw8gVW/uuk7R95YKJJCKtLmaw=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-yamllint",
-        "rev": "ee6ed29df2c7ba98c3eee41eedf0c5e45fcc5de5",
+        "rev": "acd1af6287b96cfd75f1669ddcbb3a76b4a784d5",
         "type": "github"
       },
       "original": {
@@ -632,11 +632,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788890703,
-        "narHash": "sha256-5it9v/UX2PMcsNS8thl+oHfPH9jF6WwywVm1Pp7vudI=",
+        "lastModified": 1789003766,
+        "narHash": "sha256-mjejtw+vvGa1t1wrqNb5GsDtDInd4KO7BLxkkbFuW20=",
         "owner": "pr0d1r2",
         "repo": "set-and-setting",
-        "rev": "f677fe0b5da5ae29650086a3a745ee58f66f9984",
+        "rev": "c570b80a65f1b670b0f48e21b6d908e8287c6f61",
         "type": "github"
       },
       "original": {
