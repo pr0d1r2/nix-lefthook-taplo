@@ -13,4 +13,4 @@ jobs:
     # DeterminateSystems/nix-installer-action (set-and-setting B26).
     # The referenced revision retains the Darwin installer fix and includes
     # the bounded, parallelized checks and Bats gate required by this repo.
-    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@bea28b11d687dc4450557c7109307da03ad85548
+    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@f535206dfae35bb20f912ba463d24c9badf08b66
