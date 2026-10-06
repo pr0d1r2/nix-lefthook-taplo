@@ -14,6 +14,18 @@ Lefthook-compatible [taplo](https://taplo.tamasfe.dev/) wrapper, packaged as a N
 
 Filters `.toml` files from staged arguments and runs taplo check on them. Exits 0 when no matching files are found.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    Git[Git hook] --> Lefthook[Lefthook]
+    Lefthook --> Wrapper[lefthook-taplo]
+    Wrapper --> Filter[Filter existing .toml files]
+    Filter --> Taplo[Taplo check]
+    Flake[Nix flake] --> Package[Package wrapper with Taplo]
+    Package --> Wrapper
+```
+
 ## Usage
 
 ### Option A: Lefthook remote (recommended)
